@@ -1,7 +1,5 @@
 import torch.nn.functional as F
 
-print(F)
-
 def train(args, model, device, train_loader, optimizer, epoch, writer):
     # training mode
     model.train()
