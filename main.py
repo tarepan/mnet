@@ -9,21 +9,11 @@ from .train import train
 from .test import test
 from .networks.cnn import CNN
 from .loaders import getLoaders
-class Args:
-  def __init__(self):
-    self.batch_size = 500
-    self.test_batch_size = 1000
-    self.epochs = 10
-    self.lr = 0.01
-    self.momentum = 0.5
-    self.no_cuda = False
-    self.seed = 1
-    self.log_interval = 10
+from .getConfigs import getConfigs
 
 def main():
     # acquire settings
-    ## with Args lass
-    args = Args()
+    args = getConfigs("f")
 
     # settings
     use_cuda = not args.no_cuda and torch.cuda.is_available()
