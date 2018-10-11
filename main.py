@@ -3,13 +3,12 @@ import time
 
 import torch
 import torch.optim as optim
-from torchvision import datasets, transforms
 from tensorboardX import SummaryWriter
 
 from .train import train
 from .test import test
 from .networks.cnn import CNN
-
+from .loaders import getLoaders
 class Args:
   def __init__(self):
     self.batch_size = 500
@@ -31,27 +30,15 @@ def main():
     device = torch.device("cuda" if use_cuda else "cpu")
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
 
-    # data download and preprocessing for training
-    train_loader = torch.utils.data.DataLoader(
-    datasets.MNIST('../data', train=True, download=True,
-      transform=transforms.Compose([
-         transforms.ToTensor(),
-         transforms.Normalize((0.1307,), (0.3081,))
-      ])),
-      batch_size=args.batch_size, shuffle=True, **kwargs)
-    # data download and preprocessing for test
-    test_loader = torch.utils.data.DataLoader(
-        datasets.MNIST('../data', train=False, transform=transforms.Compose([
-                           transforms.ToTensor(),
-                           transforms.Normalize((0.1307,), (0.3081,))
-                       ])),
-        batch_size=args.test_batch_size, shuffle=True, **kwargs)
 
     # initialization
     model = CNN().to(device)
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
     writer = SummaryWriter("log")
 #     writer = SummaryWriter("log/run1") # record instance
+
+    # preprocess data and push them into loaders
+    train_loader, test_loader = getLoaders(args, kwargs)
 
     # repeating traning and test
     start = time.time()
