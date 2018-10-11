@@ -35,3 +35,4 @@ def getConfigs(type="f"):
         help='how many batches to wait before logging training status')
         return parser.parse_args()
     else:
+        print("non supported config version")
