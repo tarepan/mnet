@@ -2,11 +2,13 @@ import time
 import torch
 import torch.optim as optim
 from tensorboardX import SummaryWriter
-from .train import train
-from .test import test
-from .networks.cnn import CNN
-from .loaders import getLoaders
-from .getConfigs import getConfigs
+
+from modules.trainings.train import train
+from modules.tests.test import test
+from modules.networks.cnn import CNN
+from modules.loaders import getLoaders
+from modules.getConfigs import getConfigs
+from modules.saveLoad import resumeTraining, saveModels
 
 def main():
     # settings
@@ -20,12 +22,14 @@ def main():
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
     writer = SummaryWriter("log")
     train_loader, test_loader = getLoaders(args, kwargs)
-
+    resumeTraining([model], ["./trials/trial1/models/model.pth"])
     # repeating traning and test
     start = time.time()
     for epoch in range(1, args.epochs + 1):
         train(args, model, device, train_loader, optimizer, epoch, writer)
         test(args, model, device, test_loader, epoch, writer)
+        # save models
+        saveModels([model], ["./trials/trial1/models/model.pth"])
     elapsed_time = time.time() - start
     print ("elapsed_time:{0}".format(elapsed_time) + "[sec]")
 

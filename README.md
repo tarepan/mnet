@@ -10,3 +10,9 @@ With mnet, users can generate neural network with PyTorch but the stress from co
 ## 1-click run with Google Colaboratory
 Jump to below link, then run all code (manually or "runtime"->"execute all cells")  
 [Go to Colab](https://colab.research.google.com/github/tarepan/mnet/blob/master/mnet.ipynb)
+
+## Arch.
+* DNN
+* other
+
+preprocess should be independent from

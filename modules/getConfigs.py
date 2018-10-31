@@ -1,13 +1,15 @@
 class Args:
   def __init__(self):
-    self.batch_size = 500
-    self.test_batch_size = 1000
-    self.epochs = 10
+    self.batch_size = 1
+    self.test_batch_size = 1
+    self.epochs = 5000
     self.lr = 0.01
     self.momentum = 0.5
-    self.no_cuda = False
     self.seed = 1
     self.log_interval = 10
+    self.batch_num_limit_train = None
+    self.batch_num_limit_test = None
+    self.sampling_rate = 16000
 
 def getConfigs(type="f"):
     if(type=="f"):
