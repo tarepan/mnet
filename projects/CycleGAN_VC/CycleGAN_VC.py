@@ -5,16 +5,16 @@ from tensorboardX import SummaryWriter
 import numpy as np
 import torch
 import torch.optim as optim
-from modules.trainings.train_CycleGAN import train
-from modules.tests.test_CycleGAN_VC import test
 
-from modules.networks.GatedFullyConvNet import GatedFullyConvNet as FullyGCNN
-from modules.networks.GatedCNN import GatedCNN
-
-from modules.getConfigs import getConfigs
-from modules.audioProcess.getAudioStats import getAudioStats
-from modules.audioProcess.AudioDataset import MonoAudioDataset
-from modules.saveLoad import resumeTraining, saveModels
+# from mnet.getConfigs import getConfigs
+# from mnet.audioProcess.getAudioStats import getAudioStats
+# from mnet.audioProcess.AudioDataset import MonoAudioDataset
+# from mnet.saveLoad import resumeTraining, saveModels
+#
+# from trains.train_CycleGAN import train
+# from tests.test_CycleGAN_VC import test
+# from networks.CycleGAN_VC_G import GatedFullyConvNet1d as FullyGCNN
+# from networks.CycleGAN_VC_D import GatedCNN2D as GatedCNN
 
 def main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB):
     # initialization
@@ -58,10 +58,10 @@ def main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB):
     print(f"total time: {time.time() - start}")
 
 from torch.utils.data import DataLoader
-from modules.transforms import Compose, ToTensor, ActivateRequiresGrad
-from modules.audioProcess.transforms import Clop
-from modules.audioProcess.transforms import ToNormedMCEPseq
-from modules.Dataset import NumpyDataset
+# from modules.transforms import Compose, ToTensor, ActivateRequiresGrad
+# from modules.audioProcess.transforms import Clop
+# from modules.audioProcess.transforms import ToNormedMCEPseq
+# from modules.Dataset import NumpyDataset
 
 def acquireF0statAndAudioLoader(train_dir, sampling_rate, args):
     if False:
@@ -86,17 +86,18 @@ def acquireF0statAndAudioLoader(train_dir, sampling_rate, args):
 
 
 if __name__ == "__main__":
-    train_a_dir = "./data/vcc2016/vcc2016_training/SF1"
-    train_b_dir = "./data/vcc2016/vcc2016_training/TF2"
+    train_a_dir = "../../data/vcc2016/vcc2016_training/SF1"
+    train_b_dir = "../../data/vcc2016/vcc2016_training/TF2"
 
-    modelBase = "./trials/CycleGANVC/trial1/models"
+    modelBase = "./trials/trial1/models"
 
-    evalDirA = "./data/vcc2016/evaluation_all/SF1"
-    evalDirB = "./data/vcc2016/evaluation_all/TF2"
+    evalDirA = "../../data/vcc2016/evaluation_all/SF1"
+    evalDirB = "../../data/vcc2016/evaluation_all/TF2"
 
-    args = getConfigs("f")
-    #
-    args.batch_num_limit_train = 1
-    args.batch_num_limit_test = 1
+    # args = getConfigs("f")
+    # #
+    # args.batch_num_limit_train = 1
+    # args.batch_num_limit_test = 1
 
-    main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB)
+    # import loaders
+    # main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB)
