@@ -7,6 +7,7 @@
 
 import torch.nn as nn
 from mnet.networks.SeqUnitModule import SeqUnitModule
+from mnet.networks.GatedLinearUnits import anyGLU
 
 class GatedCNN2D(SeqUnitModule):
     def __init__(self):

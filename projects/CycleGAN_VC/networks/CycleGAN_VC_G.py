@@ -12,7 +12,7 @@ from mnet.networks.PixelShuffle import PixelShuffle1d
 
 class GatedFullyConvNet1d(SeqUnitModule):
     def __init__(self):
-        super(GatedFullyConvNet, self).__init__()
+        super(GatedFullyConvNet1d, self).__init__()
         unt = [
             anyGLU(nn.Conv1d, 24, 128, 15, stride=1, padding=7, bias=True),   # (N_batch, 128, T)
             anyGLU(Conv1dIN, 128, 256, 5, stride=2, padding=2), # (N_batch, 256, T/2)

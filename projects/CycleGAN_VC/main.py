@@ -6,15 +6,15 @@ import numpy as np
 import torch
 import torch.optim as optim
 
-# from mnet.getConfigs import getConfigs
-# from mnet.audioProcess.getAudioStats import getAudioStats
-# from mnet.audioProcess.AudioDataset import MonoAudioDataset
-# from mnet.saveLoad import resumeTraining, saveModels
-#
-# from trains.train_CycleGAN import train
-# from tests.test_CycleGAN_VC import test
-# from networks.CycleGAN_VC_G import GatedFullyConvNet1d as FullyGCNN
-# from networks.CycleGAN_VC_D import GatedCNN2D as GatedCNN
+from mnet.getConfigs import getConfigs
+from mnet.audioProcess.getAudioStats import getAudioStats
+from mnet.audioProcess.AudioDataset import MonoAudioDataset
+from mnet.saveLoad import resumeTraining, saveModels
+
+from .trains.train_CycleGAN import train
+from .tests.test_CycleGAN_VC import test
+from .networks.CycleGAN_VC_G import GatedFullyConvNet1d as FullyGCNN
+from .networks.CycleGAN_VC_D import GatedCNN2D as GatedCNN
 
 def main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB):
     # initialization
@@ -24,8 +24,8 @@ def main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB):
     net_G_A2B, net_G_B2A = FullyGCNN().to(device), FullyGCNN().to(device)
     net_D_A, net_D_B = GatedCNN().to(device), GatedCNN().to(device)
     resumeEpoch = resumeTraining([net_G_A2B, net_G_B2A, net_D_A, net_D_B],
-        [modelBase+"/net_G_A2B.pth", modelBase+"/net_G_B2A.pth", modelBase+"/net_D_A.pth", modelBase+"/net_D_B.pth"],
-        modelBase+"/epoch.txt")
+        [modelBase/"net_G_A2B.pth", modelBase/"net_G_B2A.pth", modelBase/"net_D_A.pth", modelBase/"net_D_B.pth"],
+        modelBase/"epoch.txt")
     ## Optimizers & LR schedulers
     opt_G = optim.Adam(itertools.chain(net_G_A2B.parameters(), net_G_B2A.parameters()), lr=0.0002, betas=(0.5, 0.999))
     opt_D_A = optim.Adam(net_D_A.parameters(), lr=0.0001, betas=(0.5, 0.999))
@@ -39,8 +39,8 @@ def main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB):
     ## Data
     _, _, trainLoader_a = acquireF0statAndAudioLoader(train_a_dir, args.sampling_rate, args)
     _, _, trainLoader_b = acquireF0statAndAudioLoader(train_b_dir, args.sampling_rate, args)
-    featStats_a = np.load(evalDirA+"/featureStats/stats.npz")
-    featStats_b = np.load(evalDirB+"/featureStats/stats.npz")
+    featStats_a = np.load(evalDirA/"featureStats"/"stats.npz")
+    featStats_b = np.load(evalDirB/"featureStats"/"stats.npz")
 
     # Evaluation prep
 
@@ -53,15 +53,15 @@ def main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB):
         if epoch % 10 == 0:
             test(args, net_G_A2B, net_G_B2A, net_D_A, net_D_B, device, args.sampling_rate, featStats_a, featStats_b, evalDirA, evalDirB, epoch, writer)
             saveModels([net_G_A2B, net_G_B2A, net_D_A, net_D_B],
-                [modelBase+"/net_G_A2B.pth", modelBase+"/net_G_B2A.pth", modelBase+"/net_D_A.pth", modelBase+"/net_D_B.pth"],
-                 epoch, modelBase+"/epoch.txt")
+                [modelBase/"net_G_A2B.pth", modelBase/"net_G_B2A.pth", modelBase/"net_D_A.pth", modelBase/"net_D_B.pth"],
+                 epoch, modelBase/"epoch.txt")
     print(f"total time: {time.time() - start}")
 
 from torch.utils.data import DataLoader
-# from modules.transforms import Compose, ToTensor, ActivateRequiresGrad
-# from modules.audioProcess.transforms import Clop
-# from modules.audioProcess.transforms import ToNormedMCEPseq
-# from modules.Dataset import NumpyDataset
+from mnet.transforms import Compose, ToTensor, ActivateRequiresGrad
+from mnet.audioProcess.transforms import Clop
+from mnet.audioProcess.transforms import ToNormedMCEPseq
+from mnet.Dataset import NumpyDataset
 
 def acquireF0statAndAudioLoader(train_dir, sampling_rate, args):
     if False:
@@ -76,7 +76,7 @@ def acquireF0statAndAudioLoader(train_dir, sampling_rate, args):
         trainLoader = DataLoader(vcc2016_normed_MCEPseqs, batch_size=10, shuffle=False)
         return logF0_mean, logF0_std, trainLoader
     else:
-        vcc2016_normed_MCEPseqs = NumpyDataset(train_dir+"/MCEPseqs", transform=Compose([
+        vcc2016_normed_MCEPseqs = NumpyDataset(train_dir/"MCEPseqs", transform=Compose([
             Clop(),
             ToTensor(),
             ActivateRequiresGrad()
@@ -86,18 +86,18 @@ def acquireF0statAndAudioLoader(train_dir, sampling_rate, args):
 
 
 if __name__ == "__main__":
-    train_a_dir = "../../data/vcc2016/vcc2016_training/SF1"
-    train_b_dir = "../../data/vcc2016/vcc2016_training/TF2"
+    from pathlib import Path
+    root = Path(__file__).parent.parent.parent.resolve()
+    train_a_dir = root/"data"/"vcc2016"/"vcc2016_training"/"SF1"
+    train_b_dir = root/"data"/"vcc2016"/"vcc2016_training"/"TF2"
 
-    modelBase = "./trials/trial1/models"
+    modelBase = Path(__file__).parent.resolve()/"trials"/"trial1"/"models"
+    print(f"modelbase: {modelBase}")
+    evalDirA = root/"data"/"vcc2016"/"evaluation_all"/"SF1"
+    evalDirB = root/"data"/"vcc2016"/"evaluation_all"/"TF2"
 
-    evalDirA = "../../data/vcc2016/evaluation_all/SF1"
-    evalDirB = "../../data/vcc2016/evaluation_all/TF2"
+    args = getConfigs("f")
+    args.batch_num_limit_train = 1
+    args.batch_num_limit_test = 1
 
-    # args = getConfigs("f")
-    # #
-    # args.batch_num_limit_train = 1
-    # args.batch_num_limit_test = 1
-
-    # import loaders
-    # main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB)
+    main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB)

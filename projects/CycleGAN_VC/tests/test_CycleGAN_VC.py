@@ -2,8 +2,8 @@ import time
 import numpy as np
 import torch
 import librosa
-from modules.audioProcess.AudioDataset import MonoAudioDataset
-from modules.tests.conversion_CycleGAN_VC import convertVoice
+from mnet.audioProcess.AudioDataset import MonoAudioDataset
+from .conversion_CycleGAN_VC import convertVoice
 
 def convert1DInto2D(input1d):
     N_batch, channels, width = input1d.size()
@@ -24,16 +24,16 @@ def test(args, net_G_A2B, net_G_B2A, net_D_A, net_D_B, device, sr, featStats_A, 
     ## configs
     # lambda_cyc, lambda_id = 10.0, 5.0
     ## dataset
-    vcc2016_eval_wavs_a = MonoAudioDataset(evalDirA+"/wavs", sr)
-    vcc2016_eval_wavs_b = MonoAudioDataset(evalDirB+"/wavs", sr)
+    vcc2016_eval_wavs_a = MonoAudioDataset(evalDirA/"wavs", sr)
+    vcc2016_eval_wavs_b = MonoAudioDataset(evalDirB/"wavs", sr)
 
     # evaluation
     for idx, (wav_A, wav_B) in enumerate(zip(vcc2016_eval_wavs_a, vcc2016_eval_wavs_b)):
         if type(args.batch_num_limit_test) is not int or idx <= args.batch_num_limit_test:
             wav_b_gened, normedMCEPseq_a, normedMCEPseq_gened_b = convertVoice(wav_A, sr, featStats_A, featStats_B, net_G_A2B, device)
             wav_a_gened, normedMCEPseq_b, normedMCEPseq_gened_a = convertVoice(wav_B, sr, featStats_B, featStats_A, net_G_B2A, device)
-            librosa.output.write_wav(f"{evalDirA}/generated/{idx}.wav", wav_a_gened, sr)
-            librosa.output.write_wav(f"{evalDirB}/generated/{idx}.wav", wav_b_gened, sr)
+            librosa.output.write_wav(evalDirA/"generated"/f"{idx}.wav", wav_a_gened, sr)
+            librosa.output.write_wav(evalDirB/"generated"/f"{idx}.wav", wav_b_gened, sr)
             # batch_size = real_A.size()[0]
             # zeros, ones = torch.zeros(batch_size, 1, device=device), torch.ones(batch_size, 1, device=device)
             # ## waveform conersion
