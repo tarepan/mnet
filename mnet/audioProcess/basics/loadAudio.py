@@ -15,7 +15,7 @@ def loadWavs(dirPath, sr):
         ([np.ndarray(T,)]): waveform list
     """
     return (seq(os.listdir(dirPath))
-        .map(lambda name: f"{dirPath}/{name}")
+        .map(lambda name: dirPath/f"{name}")
         .filter(lambda path: os.path.isfile(path))
         .map(lambda filePath: librosa.load(filePath, sr = sr, mono = True)[0])
         .to_list())
