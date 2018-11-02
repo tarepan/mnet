@@ -4,10 +4,10 @@ import numpy as np
 from functional import seq
 import librosa
 
-from modules.audioProcess.AudioDataset import MonoAudioDataset
-from modules.audioProcess.transforms import ToNormedMCEPseq, Resample
-from modules.audioProcess.getAudioStats import getAudioStats, waves2stats
-from modules.audioProcess.basics.loadAudio import loadWavsFromDirs
+from mnet.audioProcess.AudioDataset import MonoAudioDataset
+from mnet.audioProcess.transforms import ToNormedMCEPseq, Resample
+from mnet.audioProcess.getAudioStats import getAudioStats, waves2stats
+from mnet.audioProcess.basics.loadAudio import loadWavsFromDirs
 """
 Load, convert to MCEP, then save
 """
@@ -37,7 +37,7 @@ def preprocessSingleSets(wavDirPaths, sr, distDirPathsStats, distDirPathsNormedM
     print(f"shape of wave list {len(waves)}")
     logF0_mean, logF0_std, MCEP_means, MCEP_stds = waves2stats(waves, sr)
     _ = (seq(distDirPathsStats)
-        .map(lambda distDirPath: f"{distDirPath}/stats.npz")
+        .map(lambda distDirPath: distDirPath/"stats.npz")
         .map(lambda filePath: np.savez(filePath, logF0_mean=logF0_mean, logF0_std=logF0_std, MCEP_mean=MCEP_means, MCEP_std=MCEP_stds))
         .to_list())
     print("feature stat saved!!")
@@ -45,7 +45,7 @@ def preprocessSingleSets(wavDirPaths, sr, distDirPathsStats, distDirPathsNormedM
     for wavDirPath, distDirPath in zip(wavDirPaths, distDirPathsNormedMCEPseqs):
         normed_MCEPseqs = MonoAudioDataset(wavDirPath, sr, transform=ToNormedMCEPseq(sr, MCEP_means, MCEP_stds))
         for idx, MCEPseq in enumerate(normed_MCEPseqs):
-            filePath = f"{distDirPath}/{normed_MCEPseqs.fileNames[idx]}"
+            filePath = distDirPath/f"{normed_MCEPseqs.fileNames[idx]}"
             np.save(filePath, MCEPseq)
     print("MCEPseq acquisition & normalization finished!!")
     print(f"Preprocessed!! {time.time() - start}")
@@ -54,7 +54,7 @@ def preprocessSingleSets(wavDirPaths, sr, distDirPathsStats, distDirPathsNormedM
 def resampling(wavDirPath, s_sr, t_sr, distDirPath):
     resampled_waves = MonoAudioDataset(wavDirPath, s_sr, transform=Resample(s_sr, t_sr))
     for idx, wave in enumerate(resampled_waves):
-        filePath = f"{distDirPath}/{resampled_waves.fileNames[idx]}"
+        filePath = distDirPath/f"{resampled_waves.fileNames[idx]}"
         librosa.output.write_wav(filePath, wave, t_sr)
 
 
