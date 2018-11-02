@@ -17,7 +17,7 @@ class FileDataset(Dataset):
         """
         self.dirPath = dirPath
         if(recursive == False):
-            self.fileNames = seq(os.listdir(dirPath)).filter(lambda name: os.path.isfile(os.path.join(dirPath, name))).to_list()
+            self.fileNames = seq(os.listdir(dirPath)).filter(lambda name: os.path.isfile(dirPath/f"{name}")).to_list()
         else:
             raise "Not yet implemented"
         self.transform = transform
@@ -58,6 +58,6 @@ class NumpyDataset(FileDataset):
         Load a .npy file as a numpy.ndarray
         """
         name = self.fileNames[idx]
-        filePath = os.path.join(self.dirPath, name)
+        filePath = self.dirPath/f"{name}"
         nparray = np.load(filePath)
         return self.transform(nparray)

@@ -6,17 +6,17 @@ from mnet.networks.GatedLinearUnits import anyGLU
 class StarGAN_VC_G(SeqUnitModule):
     def __init__(self):
         super(StarGAN_G, self).__init__()
-        self.units = nn.ModuleList([
-            anyGLU(Conv2dBN,        1,  32, (3, 9), (1, 1), (1, 4)),
-            anyGLU(Conv2dBN,       32,  64, (4, 8), (2, 2), (1, 3)),
-            anyGLU(Conv2dBN,       64, 128, (4, 8), (2, 2), (1, 3)),
-            anyGLU(Conv2dBN,      128,  64, (3, 5), (1, 1), (1, 2)),
-            anyGLU(Conv2dBN,       64,   5, (9, 5), (9, 1), (0, 2)),
-            anyGLU(TransConv2dBN,   5,  64, (9, 5), (9, 1), (0, 2)),
-            anyGLU(TransConv2dBN,  64, 128, (3, 5), (1, 1), (1, 2)),
-            anyGLU(TransConv2dBN, 128,  64, (4, 8), (2, 2), (1, 3)),
-            anyGLU(TransConv2dBN,  64,  32, (4, 8), (2, 2), (1, 3)),
-            nn.ConvTranspose2d(    32,   1, (3, 9), (1, 1), (1, 4))
+        self.units = nn.ModuleList([                                 # (  1, 36, 512)
+            anyGLU(Conv2dBN,        1,  32, (3, 9), (1, 1), (1, 4)), # ( 32, 36, 512)
+            anyGLU(Conv2dBN,       32,  64, (4, 8), (2, 2), (1, 3)), # ( 64, 18, 256)
+            anyGLU(Conv2dBN,       64, 128, (4, 8), (2, 2), (1, 3)), # (128,  9, 128)
+            anyGLU(Conv2dBN,      128,  64, (3, 5), (1, 1), (1, 2)), # ( 64,  9, 128)
+            anyGLU(Conv2dBN,       64,   5, (9, 5), (9, 1), (0, 2)), # (  5,  1, 128)
+            anyGLU(TransConv2dBN,   5,  64, (9, 5), (9, 1), (0, 2)), # ( 64,  9, 128)
+            anyGLU(TransConv2dBN,  64, 128, (3, 5), (1, 1), (1, 2)), # (128,  9, 128)
+            anyGLU(TransConv2dBN, 128,  64, (4, 8), (2, 2), (1, 3)), # ( 64, 18, 256)
+            anyGLU(TransConv2dBN,  64,  32, (4, 8), (2, 2), (1, 3)), # ( 32, 36, 512)
+            nn.ConvTranspose2d(    32,   1, (3, 9), (1, 1), (1, 4))  # (  1, 36, 512)
         ])
 
     # def forward(self, x):

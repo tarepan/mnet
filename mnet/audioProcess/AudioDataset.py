@@ -23,6 +23,6 @@ class MonoAudioDataset(FileDataset):
         Load a audio file as a numpy.ndarray(T,) monaural waveform
         """
         name = self.fileNames[idx]
-        filePath = os.path.join(self.dirPath, name)
+        filePath = self.dirPath/f"{name}"
         waveform = librosa.load(filePath, sr = self.samplingRate, mono = True)[0]
         return self.transform(waveform)

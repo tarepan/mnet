@@ -1,6 +1,7 @@
 import numpy as np
 import torch
-from modules.audioProcess.basics.getFeatures import convertWavIntoFeatures, convertFeaturesIntoWav
+from mnet.audioProcess.basics.getFeatures import convertWavIntoFeatures, convertFeaturesIntoWav
+
 def convertVoice(waveform, sr, fStats_src, fStats_tgt, Generator, device):
     """
     Convert a source domain wave into a target domain wave
