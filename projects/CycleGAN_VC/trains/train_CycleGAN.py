@@ -23,10 +23,10 @@ def train(args, net_G_A2B, net_G_B2A, net_D_A, net_D_B, device, train_loader_A, 
     net_D_A.train()
     net_D_B.train()
     # Lossess
-    criterion_GAN = torch.nn.MSELoss() # instead of torch.nn.BCELoss(). CycleGAN-VC original.
+    criterion_GAN = torch.nn.MSELoss(reduction='mean') # instead of torch.nn.BCELoss(). CycleGAN-VC original.
     # criterion_cycle = elementwise_mean_loss # torch.nn.L1Loss(reduction='elementwise_mean')
-    criterion_cycle = torch.nn.L1Loss(reduction='elementwise_mean')
-    criterion_identity = torch.nn.L1Loss(reduction='elementwise_mean')
+    criterion_cycle = torch.nn.L1Loss(reduction='mean')
+    criterion_identity = torch.nn.L1Loss(reduction='mean')
     # configs
     lambda_cyc = 10.0
     lambda_id = 5.0
