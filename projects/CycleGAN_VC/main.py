@@ -11,10 +11,12 @@ from mnet.audioProcess.getAudioStats import getAudioStats
 from mnet.audioProcess.AudioDataset import MonoAudioDataset
 from mnet.saveLoad import resumeTraining, saveModels
 
-from .trains.train_CycleGAN import train
+# from .trains.train_CycleGAN import train
+from .trains.train_CycleGAN_NS import train
 from .tests.test_CycleGAN_VC import test
 from .networks.CycleGAN_VC_G import GatedFullyConvNet1d as FullyGCNN
-from .networks.CycleGAN_VC_D import GatedCNN2D as GatedCNN
+# from .networks.CycleGAN_VC_D import GatedCNN2D as GatedCNN
+from .networks.CycleGAN_VC_D_NS import GatedCNN2D as GatedCNN
 
 def main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB):
     # initialization
