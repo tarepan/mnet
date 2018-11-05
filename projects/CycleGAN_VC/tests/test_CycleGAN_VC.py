@@ -32,6 +32,9 @@ def test(args, net_G_A2B, net_G_B2A, net_D_A, net_D_B, device, sr, featStats_A, 
         if type(args.batch_num_limit_test) is not int or idx <= args.batch_num_limit_test:
             wav_b_gened, normedMCEPseq_a, normedMCEPseq_gened_b = convertVoice(wav_A, sr, featStats_A, featStats_B, net_G_A2B, device)
             wav_a_gened, normedMCEPseq_b, normedMCEPseq_gened_a = convertVoice(wav_B, sr, featStats_B, featStats_A, net_G_B2A, device)
+            # TensorBoard record
+            writer.add_audio("A_gen", torch.tensor(wav_a_gened))
+            # Local record
             librosa.output.write_wav(evalDirA/"generated"/f"{idx}.wav", wav_a_gened, sr)
             librosa.output.write_wav(evalDirB/"generated"/f"{idx}.wav", wav_b_gened, sr)
             # batch_size = real_A.size()[0]
