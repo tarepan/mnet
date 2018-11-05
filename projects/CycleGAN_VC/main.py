@@ -52,7 +52,7 @@ def main(args, train_a_dir, train_b_dir, modelBase, evalDirA, evalDirB):
     # for epoch in range(1, 10):
         train(args, net_G_A2B, net_G_B2A, net_D_A, net_D_B, device, trainLoader_a, trainLoader_b, opt_G, opt_D_A, opt_D_B, epoch, writer)
         lr_scheduler_G.step(), lr_scheduler_D_A.step(), lr_scheduler_D_B.step()
-        if epoch % 10 == 0:
+        if epoch % args.log_interval == 0:
             test(args, net_G_A2B, net_G_B2A, net_D_A, net_D_B, device, args.sampling_rate, featStats_a, featStats_b, evalDirA, evalDirB, epoch, writer)
             saveModels([net_G_A2B, net_G_B2A, net_D_A, net_D_B],
                 [modelBase/"net_G_A2B.pth", modelBase/"net_G_B2A.pth", modelBase/"net_D_A.pth", modelBase/"net_D_B.pth"],

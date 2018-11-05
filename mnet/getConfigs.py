@@ -6,7 +6,7 @@ class Args:
     self.lr = 0.01
     self.momentum = 0.5
     self.seed = 1
-    self.log_interval = 10
+    self.log_interval = 10 # [epoch]
     self.batch_num_limit_train = None
     self.batch_num_limit_test = None
     self.sampling_rate = 16000
