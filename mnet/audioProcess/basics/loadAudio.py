@@ -17,7 +17,7 @@ def loadWavs(dirPath, sr):
     return (seq(os.listdir(dirPath))
         .map(lambda name: dirPath/f"{name}")
         .filter(lambda path: os.path.isfile(path))
-        .map(lambda filePath: librosa.load(filePath, sr = sr, mono = True)[0])
+        .map(lambda filePath: (librosa.load(filePath, sr = sr, mono = True)[0], ))
         .to_list())
 
 def loadWavsFromDirs(dirPathList, sr):
